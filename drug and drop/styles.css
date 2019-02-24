@@ -10,11 +10,9 @@ body {
   justify-content: center;
   overflow: hidden;
   touch-action: none;
-  
   margin-top: 70px;
- 
-  
 }
+
 #item {
   width: 100px;
   height: 30px;
@@ -23,8 +21,8 @@ body {
   z-index: 100;
   display: inline-block;
   position: absolute;
-  top: 0;
 }
+
 #item2 {
   width: 100px;
   height: 30px;

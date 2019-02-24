@@ -1,120 +1,58 @@
-let dragItem = document.getElementById('item')
-let dragItem2 = document.getElementById('item2')
-let dragItem3 = document.getElementById('item3')
-
-let container = document.getElementById('container')
+let item = document.getElementById('item')
+let item2 = document.getElementById('item2')
+let item3 = document.getElementById('item3')
 let deleteButton = document.getElementById('delete')
 let deleteButton2 = document.getElementById('delete2')
 let deleteButton3 = document.getElementById('delete3')
-
-let MaxWidth = container.clientWidth
-let MaxHeight = container.clientHeight
-
- 
 let active = false;
-let currentX;
-let currentY;
-let initialX;
-let initialY;
-let xOffset = 100;
-let yOffset = 150;
-let xOffset2 = 200;
-let yOffset2 = 170;
-let xOffset3 = 600;
-let yOffset3 = 150;
+let conteinerHeight = 400;
+let conteinerWidth = 1000;
+let itemHeight = 30;
+let itemWidth = 100;
 
+item.style.left = 0 + 'px';
+item.style.top = 0 + 'px';
+item2.style.left = 250 + 'px';
+item2.style.top = 150 + 'px';
+item3.style.left = 350 + 'px';
+item3.style.top = 200 + 'px';
 
-dragItem.style.transform = "translate3d(" + xOffset + "px, " + yOffset + "px, 0)";
-dragItem2.style.transform = "translate3d(" + xOffset2 + "px, " + yOffset2 + "px, 0)";
-dragItem3.style.transform = "translate3d(" + xOffset3 + "px, " + yOffset3 + "px, 0)";
+item.addEventListener("mousedown", dragStart, false);
+item2.addEventListener("mousedown", dragStart, false);
+item3.addEventListener("mousedown", dragStart, false);
+document.addEventListener("mouseup", dragEnd, false);
 
-container.addEventListener("mousedown", dragStart, false);
-container.addEventListener("mouseup", dragEnd, false);
-container.addEventListener("mousemove", drag, false);
-deleteButton.addEventListener ('click', deletefnc)
-deleteButton2.addEventListener ('click', deletefnc)
-deleteButton3.addEventListener ('click', deletefnc)
+deleteButton.addEventListener('click', deletefnc)
+deleteButton2.addEventListener('click', deletefnc)
+deleteButton3.addEventListener('click', deletefnc)
 
-function deletefnc (e) {
-  console.log (e)
+function deletefnc(e) {
+
   e.target.parentNode.style.display = 'none'
 }
+let mousemove
 
-function dragStart(e) {
-  if (e.target === dragItem){
-    initialX = e.pageX - xOffset;
-    initialY = e.pageY - yOffset;
-    active = true;
-  }
-  if (e.target === dragItem2){
-    initialX = e.pageX - xOffset2;
-    initialY = e.pageY - yOffset2;
-    active = true;
-  }
-  if (e.target === dragItem3){
-    initialX = e.pageX - xOffset3;
-    initialY = e.pageY - yOffset3;
-    active = true;
+function dragStart(clickEvent) {
+  active = true;
+  let currentItemStylesX = clickEvent.target.style.left
+  let currentMousePositionX = clickEvent.x
+  let currentItemStylesY = clickEvent.target.style.top
+  let currentMousePositionY = clickEvent.y
+
+  mousemove = function mousemove(e) {
+    itemMove(event, clickEvent.target, currentItemStylesX, currentMousePositionX, currentItemStylesY, currentMousePositionY)
   }
 
 
-    if (e.target.lastElementChild.id === 'delete') {
-        e.target.lastElementChild.id = 'deleteHide'
-  }
-    else if (e.target.lastElementChild.id === 'deleteHide') {
-             e.target.lastElementChild.id = 'delete'
-  }
-    if (e.target.lastElementChild.id === 'delete2') {
-    e.target.lastElementChild.id = 'deleteHide2'
-  }
-    else if (e.target.lastElementChild.id === 'deleteHide2') {
-         e.target.lastElementChild.id = 'delete2'
-  }
-    if (e.target.lastElementChild.id === 'delete3') {
-      e.target.lastElementChild.id = 'deleteHide3'
-  }
-    else if (e.target.lastElementChild.id === 'deleteHide3') {
-       e.target.lastElementChild.id = 'delete3'
-  }
-  
+  document.addEventListener('mousemove', mousemove)
+}
+function itemMove(e, target, currentItemStylesX, currentMousePositionX, currentItemStylesY, currentMousePositionY) {
+
+  target.style.left = Math.min(Math.max(parseInt(currentItemStylesX) + (e.x - currentMousePositionX), 0), (conteinerWidth - itemWidth)) + 'px'
+  target.style.top = Math.min(Math.max(parseInt(currentItemStylesY) + (e.y - currentMousePositionY), 0), (conteinerHeight - itemHeight)) + 'px'
+
 }
 
 function dragEnd(e) {
-  initialX = currentX;
-  initialY = currentY;
-
-  active = false;
-}
-
-function drag(e) {
- 
-  if (active) {
-      e.preventDefault();
-     
-      currentX = Math.max(Math.min(e.clientX - initialX, MaxWidth - e.target.clientWidth), 0)
-      currentY = Math.max(Math.min(e.clientY - initialY, MaxHeight - e.target.clientHeight), 0)
-         
-
-    if (e.target === dragItem){
-      xOffset = currentX;
-      yOffset = currentY;
-      setTranslate(currentX, currentY, dragItem);
-    }
-
-    if (e.target === dragItem2){
-      xOffset2 = currentX;
-      yOffset2 = currentY;
-      setTranslate(currentX, currentY, dragItem2);
-    }
-
-    if (e.target === dragItem3){
-      xOffset3 = currentX;
-      yOffset3 = currentY;
-      setTranslate(currentX, currentY, dragItem3);
-    }
-  }
-}
-
-function setTranslate(xPos, yPos, el) {
-  el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
+  document.removeEventListener('mousemove', mousemove)
 }
